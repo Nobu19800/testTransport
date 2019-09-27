@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<seatml>
+  <general name="talker_bridge">
+    <adaptor name="image_raw" type="ros_pub" datatype="sensor_msgs/Image" />
+    <adaptor name="in" type="rtcin" datatype="CameraImage" />
+    <script>
+      import numpy as np
+    </script>
+  </general>
+  <state name="main_state">
+    <rule source="in">
+      <script>
+       data=seat.get_in_data()
+
+       i_data = seat.get_in_data()
+       
+       out_data = seat.newData("image_raw")
+       out_data.header.stamp.secs = i_data.tm.sec
+       out_data.header.stamp.nsecs = i_data.tm.nsec
+       out_data.width = i_data.width
+       out_data.height = i_data.height
+       out_data.encoding = "rgb8"
+       out_data.step = 1920
+       img = np.ndarray(shape=(i_data.width,i_data.height,3), dtype=np.uint8, buffer=i_data.pixels)
+       iimg = img[:,:,::-1].copy()
+       out_data.data = iimg.tostring()
+       print(out_data.data[0],out_data.data[1],out_data.data[2], i_data.pixels[0],i_data.pixels[1],i_data.pixels[2])
+       
+       #out_data.data = i_data.pixels
+       
+       seat.sendto("image_raw", out_data)
+      </script>
+    </rule>
+  </state>
+</seatml>

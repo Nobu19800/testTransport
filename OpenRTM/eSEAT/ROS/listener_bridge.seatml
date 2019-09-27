@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<seatml>
+  <general name="listener_bridge">
+    <adaptor name="chatter" type="ros_sub" datatype="sensor_msgs/Image" />
+    <adaptor name="out" type="rtcout" datatype="CameraImage" />
+    <script>
+      import numpy as np
+    </script>
+  </general>
+  <state name="main_state">
+    <rule source="chatter">
+      <script sendto="out">
+       i_data=seat.get_in_data()
+       
+       out_data = seat.newData("out")
+       
+       out_data.tm.sec = i_data.header.stamp.secs
+       out_data.tm.nsec = i_data.header.stamp.nsecs
+       out_data.width = i_data.width
+       out_data.height = i_data.height
+       #img = np.ndarray(shape=(i_data.width,i_data.height,3), dtype=np.uint8, buffer=i_data.data)
+       #iimg = img[:,:,::-1].copy()
+       #out_data.pixels = iimg.tostring()
+       out_data.pixels = i_data.data
+       
+       
+       seat.set_result(out_data)
+      </script>
+    </rule>
+  </state>
+</seatml>

@@ -1,0 +1,54 @@
+# CameraTestOut CMake config file
+#
+# This file sets the following variables:
+# CameraTestOut_FOUND - Always TRUE.
+# CameraTestOut_INCLUDE_DIRS - Directories containing the CameraTestOut include files.
+# CameraTestOut_IDL_DIRS - Directories containing the CameraTestOut IDL files.
+# CameraTestOut_LIBRARIES - Libraries needed to use CameraTestOut.
+# CameraTestOut_DEFINITIONS - Compiler flags for CameraTestOut.
+# CameraTestOut_VERSION - The version of CameraTestOut found.
+# CameraTestOut_VERSION_MAJOR - The major version of CameraTestOut found.
+# CameraTestOut_VERSION_MINOR - The minor version of CameraTestOut found.
+# CameraTestOut_VERSION_REVISION - The revision version of CameraTestOut found.
+# CameraTestOut_VERSION_CANDIDATE - The candidate version of CameraTestOut found.
+
+message(STATUS "Found CameraTestOut-@PROJECT_VERSION@")
+set(CameraTestOut_FOUND TRUE)
+
+find_package(<dependency> REQUIRED)
+
+#set(CameraTestOut_INCLUDE_DIRS
+#    "@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME_LOWER@-@PROJECT_VERSION_MAJOR@"
+#    ${<dependency>_INCLUDE_DIRS}
+#    )
+#
+#set(CameraTestOut_IDL_DIRS
+#    "@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME_LOWER@-@PROJECT_VERSION_MAJOR@/idl")
+set(CameraTestOut_INCLUDE_DIRS
+    "@CMAKE_INSTALL_PREFIX@/include/@CPACK_PACKAGE_FILE_NAME@"
+    ${<dependency>_INCLUDE_DIRS}
+    )
+set(CameraTestOut_IDL_DIRS
+    "@CMAKE_INSTALL_PREFIX@/include/@CPACK_PACKAGE_FILE_NAME@/idl")
+
+
+if(WIN32)
+    set(CameraTestOut_LIBRARIES
+        "@CMAKE_INSTALL_PREFIX@/@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@@PROJECT_NAME_LOWER@@CMAKE_STATIC_LIBRARY_SUFFIX@"
+        ${<dependency>_LIBRARIES}
+        )
+else(WIN32)
+    set(CameraTestOut_LIBRARIES
+        "@CMAKE_INSTALL_PREFIX@/@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@@PROJECT_NAME_LOWER@@CMAKE_SHARED_LIBRARY_SUFFIX@"
+        ${<dependency>_LIBRARIES}
+        )
+endif(WIN32)
+
+set(CameraTestOut_DEFINITIONS ${<dependency>_DEFINITIONS})
+
+set(CameraTestOut_VERSION @PROJECT_VERSION@)
+set(CameraTestOut_VERSION_MAJOR @PROJECT_VERSION_MAJOR@)
+set(CameraTestOut_VERSION_MINOR @PROJECT_VERSION_MINOR@)
+set(CameraTestOut_VERSION_REVISION @PROJECT_VERSION_REVISION@)
+set(CameraTestOut_VERSION_CANDIDATE @PROJECT_VERSION_CANDIDATE@)
+

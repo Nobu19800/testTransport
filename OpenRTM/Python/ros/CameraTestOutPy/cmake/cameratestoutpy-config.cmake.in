@@ -1,0 +1,54 @@
+# CameraTestOutPy CMake config file
+#
+# This file sets the following variables:
+# CameraTestOutPy_FOUND - Always TRUE.
+# CameraTestOutPy_INCLUDE_DIRS - Directories containing the CameraTestOutPy include files.
+# CameraTestOutPy_IDL_DIRS - Directories containing the CameraTestOutPy IDL files.
+# CameraTestOutPy_LIBRARIES - Libraries needed to use CameraTestOutPy.
+# CameraTestOutPy_DEFINITIONS - Compiler flags for CameraTestOutPy.
+# CameraTestOutPy_VERSION - The version of CameraTestOutPy found.
+# CameraTestOutPy_VERSION_MAJOR - The major version of CameraTestOutPy found.
+# CameraTestOutPy_VERSION_MINOR - The minor version of CameraTestOutPy found.
+# CameraTestOutPy_VERSION_REVISION - The revision version of CameraTestOutPy found.
+# CameraTestOutPy_VERSION_CANDIDATE - The candidate version of CameraTestOutPy found.
+
+message(STATUS "Found CameraTestOutPy-@PROJECT_VERSION@")
+set(CameraTestOutPy_FOUND TRUE)
+
+find_package(<dependency> REQUIRED)
+
+#set(CameraTestOutPy_INCLUDE_DIRS
+#    "@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME_LOWER@-@PROJECT_VERSION_MAJOR@"
+#    ${<dependency>_INCLUDE_DIRS}
+#    )
+#
+#set(CameraTestOutPy_IDL_DIRS
+#    "@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME_LOWER@-@PROJECT_VERSION_MAJOR@/idl")
+set(CameraTestOutPy_INCLUDE_DIRS
+    "@CMAKE_INSTALL_PREFIX@/include/@CPACK_PACKAGE_FILE_NAME@"
+    ${<dependency>_INCLUDE_DIRS}
+    )
+set(CameraTestOutPy_IDL_DIRS
+    "@CMAKE_INSTALL_PREFIX@/include/@CPACK_PACKAGE_FILE_NAME@/idl")
+
+
+if(WIN32)
+    set(CameraTestOutPy_LIBRARIES
+        "@CMAKE_INSTALL_PREFIX@/@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@@PROJECT_NAME_LOWER@@CMAKE_STATIC_LIBRARY_SUFFIX@"
+        ${<dependency>_LIBRARIES}
+        )
+else(WIN32)
+    set(CameraTestOutPy_LIBRARIES
+        "@CMAKE_INSTALL_PREFIX@/@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@@PROJECT_NAME_LOWER@@CMAKE_SHARED_LIBRARY_SUFFIX@"
+        ${<dependency>_LIBRARIES}
+        )
+endif(WIN32)
+
+set(CameraTestOutPy_DEFINITIONS ${<dependency>_DEFINITIONS})
+
+set(CameraTestOutPy_VERSION @PROJECT_VERSION@)
+set(CameraTestOutPy_VERSION_MAJOR @PROJECT_VERSION_MAJOR@)
+set(CameraTestOutPy_VERSION_MINOR @PROJECT_VERSION_MINOR@)
+set(CameraTestOutPy_VERSION_REVISION @PROJECT_VERSION_REVISION@)
+set(CameraTestOutPy_VERSION_CANDIDATE @PROJECT_VERSION_CANDIDATE@)
+
