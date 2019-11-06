@@ -17,7 +17,7 @@ class Subscriber(Node):
         super().__init__('Subscriber')
         self.subscription = self.create_subscription(
             Image,
-            'topic',
+            'chatter',
             self.listener_callback,
             10)
 
@@ -27,27 +27,27 @@ class Subscriber(Node):
         self._mutex = threading.RLock()
 
     def listener_callback(self, msg):
-        #print(msg)
+        # print(msg)
         #self.get_logger().info('I heard: "%s"' % msg.data)
         if not msg or self._datasize == len(msg.data):
-        	start = msg.header.stamp.sec + msg.header.stamp.nanosec/1000000000.0
-        	end = time.time()
-        	diff = end - start
-        	self._data.append(diff)
+            start = msg.header.stamp.sec + msg.header.stamp.nanosec/1000000000.0
+            end = time.time()
+            diff = end - start
+            self._data.append(diff)
         else:
-        	self.save(len(msg.data))
+            self.save(len(msg.data))
 
     def save(self, newsize):
         if len(self._data) == 0:
-        	self._datasize = newsize
-        	return
+            self._datasize = newsize
+            return
         avg = 0.0
         for data in self._data:
-        	avg += data
+            avg += data
         avg /= len(self._data)
         print(self._datasize, avg, len(self._data))
         self._data = []
-		
+
         self._file.write(str(self._datasize)+"\t"+str(avg)+"\n")
         datasize = newsize
 
@@ -58,7 +58,6 @@ def main(args=None):
     subscriber = Subscriber()
 
     rclpy.spin(subscriber)
-
 
     rclpy.shutdown()
     subscriber.save(0)
