@@ -1,0 +1,15 @@
+#ifndef testService_idl
+#define testService_idl
+
+#include "InterfaceDataTypes.idl"
+
+module testOpenRTM
+{
+  interface testService
+  {
+    void put(in RTC::CameraImage data);
+  };
+};
+
+
+#endif

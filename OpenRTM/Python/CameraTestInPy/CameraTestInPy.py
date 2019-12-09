@@ -56,6 +56,7 @@ class DataListener(OpenRTM_aist.ConnectorDataListenerT):
         pass
 
     def __call__(self, info, data):
+        guard = OpenRTM_aist.ScopedLock(self._mutex)
         try:
             if not self._data or self._datasize == len(data.pixels):
                 start = OpenRTM_aist.TimeValue(data.tm.sec, data.tm.nsec/1000)
