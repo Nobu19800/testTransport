@@ -218,7 +218,11 @@ namespace RTC
     	bool serialize(void *data, eprosima::fastrtps::rtps::SerializedPayload_t *payload);
     	bool deserialize(eprosima::fastrtps::rtps::SerializedPayload_t *payload, void *data);
             std::function<uint32_t()> getSerializedSizeProvider(void* data);
+#if (FASTRTPS_VERSION_MAJOR <= 1) && (FASTRTPS_VERSION_MINOR <= 6)
     	bool getKey(void *data, eprosima::fastrtps::rtps::InstanceHandle_t *ihandle);
+#else
+    	bool getKey(void *data, eprosima::fastrtps::rtps::InstanceHandle_t *ihandle, bool force_md5 = false);
+#endif
     	void* createData();
     	void deleteData(void * data);
     	MD5 m_md5;

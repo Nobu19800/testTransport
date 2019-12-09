@@ -29,6 +29,7 @@
 
 #include <fastrtps/utils/eClock.h>
 #include <chrono>
+#include <thread>
 
 #include "InterfaceDataTypesPublisher.h"
 

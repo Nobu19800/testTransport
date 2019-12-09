@@ -942,7 +942,11 @@ namespace RTC
         delete((CameraImage*)data);
     }
 
+#if (FASTRTPS_VERSION_MAJOR <= 1) && (FASTRTPS_VERSION_MINOR <= 6)
     bool CameraImagePubSubType::getKey(void *data, InstanceHandle_t* handle) {
+#else
+    bool CameraImagePubSubType::getKey(void *data, InstanceHandle_t* handle, bool force_md5) {
+#endif
         if(!m_isGetKeyDefined)
             return false;
         CameraImage* p_type = (CameraImage*) data;
