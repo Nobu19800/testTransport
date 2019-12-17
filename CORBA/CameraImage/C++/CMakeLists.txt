@@ -75,7 +75,7 @@ endif(NOT TARGET ALL_IDL_TGT)
 
 
 
-add_executable(CORBATestIn CORBATestIn.cpp PortService_impl.cpp ${ALL_IDL_SRCS})
+add_executable(CORBATestIn CORBATestIn.cpp CORBASVC.cpp ${ALL_IDL_SRCS})
 target_link_libraries(CORBATestIn ${OPENRTM_LIBRARIES})
 add_executable(CORBATestOut CORBATestOut.cpp ${ALL_IDL_SRCS})
 target_link_libraries(CORBATestOut ${OPENRTM_LIBRARIES})

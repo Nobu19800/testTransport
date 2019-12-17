@@ -40,8 +40,20 @@ public:
   Subscriber()
   : Node("ros2_test_subscriber")
   {
+    //RMW_QOS_POLICY_RELIABILITY_RELIABLE : RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
+  rmw_qos_reliability_policy_t reliability_policy_ = RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT;
+  //RMW_QOS_POLICY_HISTORY_KEEP_ALL : RMW_QOS_POLICY_HISTORY_KEEP_LAST
+  rmw_qos_history_policy_t history_policy_ = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
+  size_t depth_ = 10;
+  auto qos = rclcpp::QoS(
+    rclcpp::QoSInitialization(
+      history_policy_,
+      depth_
+  ));
+  qos.reliability(reliability_policy_);
+
     subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
-      "topic", 10, std::bind(&Subscriber::topic_callback, this, _1));
+      "topic", qos, std::bind(&Subscriber::topic_callback, this, _1));
   }
 
 private:
@@ -65,6 +77,9 @@ std::lock_guard<std::mutex> guard(m_mu);
 
 int main(int argc, char * argv[])
 {
+  
+  
+
   rclcpp::init(argc, argv);
   rclcpp::spin(std::make_shared<Subscriber>());
   rclcpp::shutdown();

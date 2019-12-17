@@ -114,6 +114,7 @@ void InterfaceDataTypesSubscriber::run()
 {
 	std::cout << "Waiting for Data, press Enter to stop the Subscriber. "<<std::endl;
 	std::cin.ignore();
+	m_listener.save(0);
 	std::cout << "Shutting down the Subscriber." << std::endl;
 }
 

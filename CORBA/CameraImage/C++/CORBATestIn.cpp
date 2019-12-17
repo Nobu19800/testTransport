@@ -1,4 +1,4 @@
-#include "PortService_impl.h"
+#include "CORBASVC.h"
 #include <fstream>
 #include <iostream>
 #include <coil/Task.h>
@@ -13,8 +13,7 @@ public:
     ~Task() {}
     int svc() override
     {
-        int a;
-        std::cin >> a;
+        std::cin.ignore();
         m_orb->shutdown(false);
         return 0;
     }
@@ -27,10 +26,10 @@ int main(int argc, char *argv[])
     CORBA::Object_var       obj = orb->resolve_initial_references("RootPOA");
     PortableServer::POA_var poa = PortableServer::POA::_narrow(obj);
 
-    PortableServer::Servant_var<CORBASVC_impl> myts = new CORBASVC_impl();
-    PortableServer::ObjectId_var myechoid = poa->activate_object(myts);
-    obj = myts->_this();
-    CORBA::String_var sior(orb->object_to_string(obj));
+    PortableServer::Servant_var<CORBASVC_impl> csts = new CORBASVC_impl();
+    PortableServer::ObjectId_var myechoid = poa->activate_object(csts);
+    CORBA::Object_var csobj = csts->_this();
+    CORBA::String_var sior(orb->object_to_string(csobj));
     std::cout << sior << std::endl;
 
     std::ofstream ofs("ior.txt");
@@ -48,7 +47,7 @@ int main(int argc, char *argv[])
     Task t(orb);
     t.activate();
     orb->run();
-    myts->save(0);
+    csts->save(0);
 
     return 0;
 }
