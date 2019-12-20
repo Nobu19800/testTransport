@@ -37,7 +37,7 @@ class InterfaceDataTypesSubscriber
 public:
 	InterfaceDataTypesSubscriber();
 	virtual ~InterfaceDataTypesSubscriber();
-	bool init();
+	bool init(std::string xml_name);
 	void run();
 private:
 	eprosima::fastrtps::Participant *mp_participant;
@@ -46,7 +46,9 @@ private:
 	class SubListener : public eprosima::fastrtps::SubscriberListener
 	{
 	public:
-		SubListener() : n_matched(0),n_msg(0){};
+		SubListener() : n_matched(0),n_msg(0){
+			m_file.open("listener.txt");
+		};
 		~SubListener(){};
 		void onSubscriptionMatched(eprosima::fastrtps::Subscriber* sub,eprosima::fastrtps::rtps::MatchingInfo& info);
 		void onNewDataMessage(eprosima::fastrtps::Subscriber* sub);

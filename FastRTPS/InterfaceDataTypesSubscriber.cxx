@@ -25,6 +25,7 @@
 #include <fastrtps/attributes/SubscriberAttributes.h>
 
 #include <fastrtps/Domain.h>
+#include <fastrtps/xmlparser/XMLProfileManager.h>
 
 #include "InterfaceDataTypesSubscriber.h"
 
@@ -38,29 +39,63 @@ InterfaceDataTypesSubscriber::InterfaceDataTypesSubscriber() : mp_participant(nu
 
 InterfaceDataTypesSubscriber::~InterfaceDataTypesSubscriber() {	Domain::removeParticipant(mp_participant);}
 
-bool InterfaceDataTypesSubscriber::init()
+bool InterfaceDataTypesSubscriber::init(std::string xml_name)
 {
 	// Create RTPSParticipant
+
+	if(!xml_name.empty())
+	{
+		eprosima::fastrtps::Domain::loadXMLProfilesFile(xml_name);
+	}
 	
-	ParticipantAttributes PParam;
-	PParam.rtps.builtin.domainId = 0; //MUST BE THE SAME AS IN THE PUBLISHER
-	PParam.rtps.builtin.leaseDuration = c_TimeInfinite;
-	PParam.rtps.setName("Participant_subscriber"); //You can put the name you want
-	mp_participant = Domain::createParticipant(PParam);
+	if(xml_name.empty())
+	{
+		ParticipantAttributes PParam;
+		PParam.rtps.builtin.domainId = 0; //MUST BE THE SAME AS IN THE PUBLISHER
+		PParam.rtps.builtin.leaseDuration = c_TimeInfinite;
+		PParam.rtps.builtin.readerHistoryMemoryPolicy = eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+		PParam.rtps.builtin.writerHistoryMemoryPolicy = eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+		PParam.rtps.setName("Participant_subscriber"); //You can put the name you want
+		mp_participant = Domain::createParticipant(PParam);
+
+	}
+	else
+	{
+		mp_participant = Domain::createParticipant("participant_profile");
+	}
+	
 	if(mp_participant == nullptr)
-			return false;
-	
+		return false;
+		
 	//Register the type
+
+	
 	
 	Domain::registerType(mp_participant,(TopicDataType*) &myType);		
 			
 	// Create Subscriber
-			
+	
 	SubscriberAttributes Rparam;
-	Rparam.topic.topicKind = NO_KEY;
-	Rparam.topic.topicDataType = myType.getName(); //Must be registered before the creation of the subscriber
-	Rparam.topic.topicName = "chatter";
-    Rparam.historyMemoryPolicy = eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+	if(xml_name.empty())
+	{
+		Rparam.topic.topicKind = NO_KEY;
+		Rparam.topic.topicDataType = myType.getName(); //Must be registered before the creation of the subscriber
+		Rparam.topic.topicName = "chatter";
+		Rparam.historyMemoryPolicy = eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+		Rparam.qos.m_reliability.kind = eprosima::fastrtps::RELIABLE_RELIABILITY_QOS;
+		//Rparam.topic.historyQos.kind = KEEP_ALL_HISTORY_QOS;
+	}
+	else
+	{
+		if(eprosima::fastrtps::xmlparser::XMLP_ret::XML_ERROR == eprosima::fastrtps::xmlparser::XMLProfileManager::fillSubscriberAttributes("subscriber_profile", Rparam))
+		{
+			return false;
+		}
+		else
+		{
+			Rparam.topic.topicDataType = myType.getName();
+		}
+	}
 	mp_subscriber = Domain::createSubscriber(mp_participant,Rparam,(SubscriberListener*)&m_listener);
 	if(mp_subscriber == nullptr)
 		return false;
@@ -70,7 +105,7 @@ bool InterfaceDataTypesSubscriber::init()
 
 void InterfaceDataTypesSubscriber::SubListener::onSubscriptionMatched(Subscriber* sub,MatchingInfo& info)
 {
-    m_file.open("listener.txt");
+    
 	if (info.status == MATCHED_MATCHING)
 	{
 		n_matched++;
@@ -80,6 +115,7 @@ void InterfaceDataTypesSubscriber::SubListener::onSubscriptionMatched(Subscriber
 	{
 		n_matched--;
 		std::cout << "Subscriber unmatched" << std::endl;
+		save(0);
 	}
 }
 
@@ -114,7 +150,7 @@ void InterfaceDataTypesSubscriber::run()
 {
 	std::cout << "Waiting for Data, press Enter to stop the Subscriber. "<<std::endl;
 	std::cin.ignore();
-	m_listener.save(0);
+	
 	std::cout << "Shutting down the Subscriber." << std::endl;
 }
 
@@ -136,7 +172,6 @@ void InterfaceDataTypesSubscriber::SubListener::save(unsigned long newsize)
 
     avg /= m_data.size();
     m_data.clear();
-
     m_file << m_datasize << "\t" << avg << std::endl;
 
     m_datasize = newsize;

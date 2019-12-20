@@ -32,8 +32,9 @@ using namespace eprosima::fastrtps;
 int main(int argc, char** argv)
 {
 	int type = 0; 
+	std::string xml_name;
 
-	if (argc == 2)
+	if (argc >= 2)
 	{
 		if (strcmp(argv[1], "publisher") == 0)
 		{
@@ -42,6 +43,10 @@ int main(int argc, char** argv)
 		else if (strcmp(argv[1], "subscriber") == 0)
 		{
 			type = 2;
+		}
+		if(argc == 3)
+		{
+			xml_name = argv[2];
 		}
 	}
 	
@@ -62,7 +67,7 @@ int main(int argc, char** argv)
 		case 1:
 		{
 			InterfaceDataTypesPublisher mypub;
-			if (mypub.init())
+			if (mypub.init(xml_name))
 			{
 				mypub.run();
 			}
@@ -71,7 +76,7 @@ int main(int argc, char** argv)
 		case 2:
 		{
 			InterfaceDataTypesSubscriber mysub;
-			if (mysub.init())
+			if (mysub.init(xml_name))
 			{
 				mysub.run();
 			}

@@ -26,6 +26,7 @@
 #include <fastrtps/attributes/PublisherAttributes.h>
 
 #include <fastrtps/Domain.h>
+#include <fastrtps/xmlparser/XMLProfileManager.h>
 
 #include <fastrtps/utils/eClock.h>
 #include <chrono>
@@ -40,15 +41,30 @@ InterfaceDataTypesPublisher::InterfaceDataTypesPublisher() : mp_participant(null
 
 InterfaceDataTypesPublisher::~InterfaceDataTypesPublisher() {	Domain::removeParticipant(mp_participant);}
 
-bool InterfaceDataTypesPublisher::init()
+bool InterfaceDataTypesPublisher::init(std::string xml_name)
 {
 	// Create RTPSParticipant
+
+
+	if(!xml_name.empty())
+	{
+		eprosima::fastrtps::Domain::loadXMLProfilesFile(xml_name);
+	}
 	
-	ParticipantAttributes PParam;
-	PParam.rtps.builtin.domainId = 0;
-	PParam.rtps.builtin.leaseDuration = c_TimeInfinite;
-	PParam.rtps.setName("Participant_publisher");  //You can put here the name you want
-	mp_participant = Domain::createParticipant(PParam);
+	if(xml_name.empty())
+	{
+		ParticipantAttributes PParam;
+		PParam.rtps.builtin.domainId = 0;
+		PParam.rtps.builtin.leaseDuration = c_TimeInfinite;
+		PParam.rtps.builtin.readerHistoryMemoryPolicy = eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+		PParam.rtps.builtin.writerHistoryMemoryPolicy = eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+		PParam.rtps.setName("Participant_publisher");  //You can put here the name you want
+		mp_participant = Domain::createParticipant(PParam);
+	}
+	else
+	{
+		mp_participant = Domain::createParticipant("participant_profile");
+	}
 	if(mp_participant == nullptr)
 		return false;
 	
@@ -59,11 +75,27 @@ bool InterfaceDataTypesPublisher::init()
 	// Create Publisher
 	
 	PublisherAttributes Wparam;
-	Wparam.topic.topicKind = NO_KEY;
-	Wparam.topic.topicDataType = myType.getName();  //This type MUST be registered
-	Wparam.topic.topicName = "chatter";
-    Wparam.qos.m_publishMode.kind = ASYNCHRONOUS_PUBLISH_MODE;
-    Wparam.historyMemoryPolicy = eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+	if(xml_name.empty())
+	{
+		Wparam.topic.topicKind = NO_KEY;
+		Wparam.topic.topicDataType = myType.getName();  //This type MUST be registered
+		Wparam.topic.topicName = "chatter";
+		Wparam.qos.m_publishMode.kind = ASYNCHRONOUS_PUBLISH_MODE;
+		Wparam.historyMemoryPolicy = eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+		Wparam.qos.m_reliability.kind = eprosima::fastrtps::RELIABLE_RELIABILITY_QOS;
+		//Wparam.topic.historyQos.kind = KEEP_ALL_HISTORY_QOS;
+	}
+	else
+	{
+		if(eprosima::fastrtps::xmlparser::XMLP_ret::XML_ERROR == eprosima::fastrtps::xmlparser::XMLProfileManager::fillPublisherAttributes("publisher_profile", Wparam))
+		{
+			return false;
+		}
+		else
+		{
+			Wparam.topic.topicDataType = myType.getName();  //This type MUST be registered
+		}
+	}
 	mp_publisher = Domain::createPublisher(mp_participant,Wparam,(PublisherListener*)&m_listener);
 	if(mp_publisher == nullptr)
 		return false;

@@ -82,9 +82,10 @@ public:
       avg += data;
     }
     avg /= m_data.size();
-    m_data.clear();
-    std::cout << m_datasize << "\t" << avg << std::endl;
+    
+    std::cout << m_datasize << "\t" << m_data.size() << "\t" << avg << std::endl;
     m_file << m_datasize << "\t" << avg << std::endl;
+    m_data.clear();
     m_datasize = newsize;
   }
 private:

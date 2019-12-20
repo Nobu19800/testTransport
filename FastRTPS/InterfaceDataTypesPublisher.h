@@ -33,7 +33,7 @@ class InterfaceDataTypesPublisher
 public:
 	InterfaceDataTypesPublisher();
 	virtual ~InterfaceDataTypesPublisher();
-	bool init();
+	bool init(std::string xml_name);
 	void run();
 private:
 	eprosima::fastrtps::Participant *mp_participant;
