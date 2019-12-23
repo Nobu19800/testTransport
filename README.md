@@ -1,7 +1,53 @@
-# testTransport
+# 1. testTransport
 OpenRTM-aist、ROS、ROS2、Fast-RTPS、omniORB、TAOのデータ転送速度計測用のC++ソースファイル、Pythonスクリプト。
 
-## OpenRTM-aist(C++)
+<!-- TOC -->
+
+- [testTransport](#testtransport)
+    - [OpenRTM-aist(C++)](#openrtm-aistc)
+        - [omniORB](#omniorb)
+            - [ビルド手順](#ビルド手順)
+                - [Windows](#windows)
+                - [Ubuntu](#ubuntu)
+            - [実行手順](#実行手順)
+                - [Windows](#windows)
+                    - [CORBA通信](#corba通信)
+                    - [ROS通信](#ros通信)
+                - [Ubuntu](#ubuntu)
+                    - [CORBA通信](#corba通信)
+                    - [ROS通信](#ros通信)
+                    - [ROS2通信](#ros2通信)
+        - [TAO](#tao)
+            - [ビルド手順](#ビルド手順)
+                - [Windows](#windows)
+                - [Ubuntu](#ubuntu)
+            - [実行手順](#実行手順)
+                - [Windows](#windows)
+                - [Ubuntu](#ubuntu)
+    - [ROS(C++)](#rosc)
+        - [ビルド手順](#ビルド手順)
+            - [Windows](#windows)
+            - [Ubuntu](#ubuntu)
+        - [実行手順](#実行手順)
+            - [Windows](#windows)
+            - [Ubuntu](#ubuntu)
+    - [ROS2(C++)](#ros2c)
+        - [ビルド手順](#ビルド手順)
+            - [Windows](#windows)
+            - [Ubuntu](#ubuntu)
+        - [実行手順](#実行手順)
+            - [Windows](#windows)
+            - [Ubuntu](#ubuntu)
+    - [Fast-RTPS(C++)](#fast-rtpsc)
+        - [ビルド手順](#ビルド手順)
+            - [Windows](#windows)
+            - [Ubuntu](#ubuntu)
+        - [実行手順](#実行手順)
+            - [Windows](#windows)
+
+<!-- /TOC -->
+
+## 1.1. OpenRTM-aist(C++)
 
 
 ```
@@ -10,9 +56,11 @@ cmake .. -DCMAKE_INSTALL_PREFIX=xxxxxxxxxxxxxxxxxx
 cmake --build . --target install --config Release
 ```
 
-### omniORB
-#### ビルド手順
-##### Windows
+### 1.1.1. omniORB
+
+#### 1.1.1.1. ビルド手順
+
+##### 1.1.1.1.1. Windows
 以下のコマンドを`OpenRTM/C++/CameraTestIn`、`CameraTestOut`で実行。
 
 ```
@@ -23,7 +71,7 @@ cmake --build . --config Release
 ```
 
 
-##### Ubuntu
+##### 1.1.1.1.2. Ubuntu
 ```
 git clone https://github.com/Nobu19800/testTransport
 cd testTransport/OpenRTM/C++/CameraTestIn
@@ -42,10 +90,12 @@ cmake --build . --config Release -- -j$(nproc)
 ```
 
 
-#### 実行手順
+#### 1.1.1.2. 実行手順
 実行前にネームサーバーを起動しておく。
-##### Windows
-###### CORBA通信
+
+##### 1.1.1.2.1. Windows
+
+###### 1.1.1.2.1.1. CORBA通信
 
 必ずCameraTestOutCompから起動する。
 
@@ -61,7 +111,7 @@ set PATH=${OpenRTM-aistのインストールディレクトリ}\2.0.0\omniORB\4.
 src\Release\CameraTestInComp.exe -f ../conf/iiop/rtc.conf
 ```
 
-###### ROS通信
+###### 1.1.1.2.1.2. ROS通信
 
 CameraTestIn、CameraTestOutの`conf/ros/rtc_ros.conf`を環境に合わせて変更する。
 
@@ -89,9 +139,9 @@ set PATH=${OpenRTM-aistのインストールディレクトリ}\2.0.0\omniORB\4.
 src\Release\CameraTestInComp.exe -f ../conf/ros/rtc_ros.conf
 ```
 
-##### Ubuntu
+##### 1.1.1.2.2. Ubuntu
 
-###### CORBA通信
+###### 1.1.1.2.2.1. CORBA通信
 
 ```
 src/CameraTestOutComp -f ../conf/iiop/rtc.conf
@@ -101,7 +151,7 @@ src/CameraTestOutComp -f ../conf/iiop/rtc.conf
 src/CameraTestInComp -f ../conf/iiop/rtc.conf
 ```
 
-###### ROS通信
+###### 1.1.1.2.2.2. ROS通信
 
 CameraTestIn、CameraTestOutの`conf/ros/rtc_ros.conf`を環境に合わせて変更する。
 
@@ -126,7 +176,7 @@ src/CameraTestOutComp -f ../conf/ros/rtc_ros.conf
 src/CameraTestInComp -f ../conf/ros/rtc_ros.conf
 ```
 
-###### ROS2通信
+###### 1.1.1.2.2.3. ROS2通信
 
 CameraTestIn、CameraTestOutの`conf/ros2/rtc_ros2_besteffort.conf`(もしくは`rtc_ros2_reliable.conf`)を環境に合わせて変更する。
 
@@ -144,17 +194,18 @@ src/CameraTestInComp -f ../conf/ros/rtc_ros2_besteffort.conf
 ```
 
 
-### TAO
+### 1.1.2. TAO
 
-#### ビルド手順
-##### Windows
+#### 1.1.2.1. ビルド手順
+
+##### 1.1.2.1.1. Windows
 
 ```
 cmake .. -DOpenRTM_DIR=${OpenRTM-aistのインストールディレクトリ}/cmake -G "Visual Studio 15 2017" -A x64
 cmake --build . --config Release
 ```
 
-##### Ubuntu
+##### 1.1.2.1.2. Ubuntu
 ```
 git clone https://github.com/Nobu19800/testTransport
 cd testTransport/OpenRTM/C++/CameraTestIn
@@ -172,9 +223,10 @@ cmake .. -DOpenRTM_DIR=${OpenRTM-aistのインストールディレクトリ}/li
 cmake --build . --config Release -- -j$(nproc)
 ```
 
-#### 実行手順
+#### 1.1.2.2. 実行手順
 実行前にネームサーバーを起動しておく。
-##### Windows
+
+##### 1.1.2.2.1. Windows
 
 必ずCameraTestOutCompから起動する。
 
@@ -190,7 +242,7 @@ set PATH=${OpenRTM-aistのインストールディレクトリ}\2.0.0\ACE\vc141\
 src\Release\CameraTestInComp.exe -f ../conf/iiop/rtc.conf
 ```
 
-##### Ubuntu
+##### 1.1.2.2.2. Ubuntu
 TAOを任意のディレクトリにインストールしている場合は`LD_LIBRARY_PATH`を設定する。
 
 ```
@@ -205,9 +257,11 @@ src/CameraTestOutComp -f ../conf/iiop/rtc.conf
 src/CameraTestInComp -f ../conf/iiop/rtc.conf
 ```
 
-## ROS(C++)
-### ビルド手順
-#### Windows
+## 1.2. ROS(C++)
+
+### 1.2.1. ビルド手順
+
+#### 1.2.1.1. Windows
 
 ```
 xcopy testTransport\ROS\C++ C:\catkin_ws\src\testTransport_cpp
@@ -218,7 +272,7 @@ devel\setup.bat
 catkin_make
 ```
 
-#### Ubuntu
+#### 1.2.1.2. Ubuntu
 
 ```
 git clone https://github.com/Nobu19800/testTransport
@@ -232,8 +286,9 @@ source ./devel/setup.bash
 catkin_make
 ```
 
-### 実行手順
-#### Windows
+### 1.2.2. 実行手順
+
+#### 1.2.2.1. Windows
 roscoreを起動する。
 
 ```
@@ -249,7 +304,7 @@ rosrun cameratest listener
 rosrun cameratest talker
 ```
 
-#### Ubuntu
+#### 1.2.2.2. Ubuntu
 
 ```
 roscore
@@ -264,8 +319,9 @@ rosrun cameratest talker
 ```
 
 
-## ROS2(C++)
-### ビルド手順
+## 1.3. ROS2(C++)
+
+### 1.3.1. ビルド手順
 colconをインストールする。
 
 ```
@@ -277,7 +333,7 @@ mkdir src
 colcon build
 ```
 
-#### Windows
+#### 1.3.1.1. Windows
 
 
 以下のコマンドは`Developer Command Prompt for VS 2019`で実行する。
@@ -294,15 +350,17 @@ colcon build
 ```
 
 
-#### Ubuntu
+#### 1.3.1.2. Ubuntu
 ```
 cp -r testTransport/ROS2/C++ ~/ros2_ws/src/testTransport_cpp
 cd ~/ros2_ws
 source install/local_setup.bash
 colcon build
 ```
-### 実行手順
-#### Windows
+
+### 1.3.2. 実行手順
+
+#### 1.3.2.1. Windows
 
 ```
 call install/local_setup.bat
@@ -314,7 +372,7 @@ call install/local_setup.bat
 build\ros2test\Release\publisher.exe
 ```
 
-#### Ubuntu
+#### 1.3.2.2. Ubuntu
 
 ```
 source install/local_setup.bash
@@ -326,9 +384,11 @@ source install/local_setup.bash
 ros2 run ros2test publisher
 ```
 
-## Fast-RTPS(C++)
-### ビルド手順
-#### Windows
+## 1.4. Fast-RTPS(C++)
+
+### 1.4.1. ビルド手順
+
+#### 1.4.1.1. Windows
 ```
 cd testTransport\FastRTPS
 mkdir build
@@ -336,7 +396,8 @@ cd build
 cmake ..
 cmake --build . --config Release
 ```
-#### Ubuntu
+
+#### 1.4.1.2. Ubuntu
 ```
 cd testTransport/FastRTPS
 mkdir build
@@ -345,8 +406,9 @@ cmake ..
 cmake --build . --config Release -- -j$(nproc)
 ```
 
-### 実行手順
-#### Windows
+### 1.4.2. 実行手順
+
+#### 1.4.2.1. Windows
 ```
 CameraImageTest publisher ../conf/test_qos_besteffort.xml
 ```
