@@ -1,4 +1,3 @@
-# 1. testTransport
 OpenRTM-aist、ROS、ROS2、Fast-RTPS、omniORB、TAOのデータ転送速度計測用のC++ソースファイル、Pythonスクリプト。
 
 <!-- TOC -->
@@ -47,6 +46,15 @@ OpenRTM-aist、ROS、ROS2、Fast-RTPS、omniORB、TAOのデータ転送速度計
 
 <!-- /TOC -->
 
+# 計測用プログラムの概要
+## OpenRTM
+## ROS
+## ROS2
+## FastRTPS
+## CORBA
+
+
+# ビルド、実行
 ## 1.1. OpenRTM-aist(C++)
 
 
