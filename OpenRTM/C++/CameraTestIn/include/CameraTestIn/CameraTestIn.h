@@ -83,8 +83,8 @@ public:
     }
     avg /= m_data.size();
     
-    std::cout << m_datasize << "\t" << m_data.size() << "\t" << avg << std::endl;
-    m_file << m_datasize << "\t" << avg << std::endl;
+    std::cout << m_datasize << "\t" << avg << "\t" << m_data.size() << std::endl;
+    m_file << m_datasize << "\t" << avg << "\t" << m_data.size() << std::endl;
     m_data.clear();
     m_datasize = newsize;
   }

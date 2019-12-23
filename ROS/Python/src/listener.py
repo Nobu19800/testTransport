@@ -35,10 +35,11 @@ def save(newsize):
 	for data in _data:
 		avg += data
 	avg /= len(_data)
+
 	print(_datasize, avg, len(_data))
-	_data = []
+	_file.write(str(_datasize)+"\t"+str(avg)+"\t"+str(len(_data))+"\n")
 	
-	_file.write(str(_datasize)+"\t"+str(avg)+"\n")
+	_data = []
 	datasize = newsize
 
 def listener():

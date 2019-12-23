@@ -24,13 +24,12 @@ void save(unsigned long newsize)
       avg += data;
     }
 
-    std::cout << newsize << "\t" << m_data.size() << std::endl;
-
     avg /= m_data.size();
+
+    std::cout << newsize << "\t" << avg << "\t" << m_data.size() << std::endl;
+    m_file << m_datasize << "\t" << avg << "\t" << m_data.size() << std::endl;
+
     m_data.clear();
-
-    m_file << m_datasize << "\t" << avg << std::endl;
-
     m_datasize = newsize;
 }
 void chatterCallback(const sensor_msgs::Image::ConstPtr& msg)

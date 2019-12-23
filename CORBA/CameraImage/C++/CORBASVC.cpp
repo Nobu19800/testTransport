@@ -39,8 +39,8 @@ void CORBASVC_impl::save(CORBA::ULong newsize)
         avg += data;
     }
     avg /= m_data.size();
+    std::cout << m_datasize << "\t" << avg << "\t" << m_data.size() << std::endl;
+    m_file << m_datasize << "\t" << avg << "\t" << m_data.size() << std::endl;
     m_data.clear();
-    std::cout << m_datasize << "\t" << avg << std::endl;
-    m_file << m_datasize << "\t" << avg << std::endl;
     m_datasize = newsize;
 }

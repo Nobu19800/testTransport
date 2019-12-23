@@ -45,10 +45,10 @@ class Subscriber(Node):
         for data in self._data:
             avg += data
         avg /= len(self._data)
-        print(self._datasize, avg, len(self._data))
         self._data = []
 
-        self._file.write(str(self._datasize)+"\t"+str(avg)+"\n")
+        print(self._datasize, avg, len(self._data))
+        self._file.write(str(self._datasize)+"\t"+str(avg)+"\t"+str(len(self._data))+"\n")
         datasize = newsize
 
 

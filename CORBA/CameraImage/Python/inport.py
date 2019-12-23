@@ -41,8 +41,8 @@ class testOpenRTM_impl(testOpenRTM__POA.testService):
             avg += data
         avg /= len(self._data)
         print(self._datasize, avg, len(self._data))
+        self._file.write(str(self._datasize)+"\t"+str(avg)+"\t"+str(len(self._data))+"\n")
         self._data = []
-        self._file.write(str(self._datasize)+"\t"+str(avg)+"\n")
         self._datasize = newsize
 
 
