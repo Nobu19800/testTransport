@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     PortableServer::POA_var poa = PortableServer::POA::_narrow(obj);
 
     PortableServer::Servant_var<CORBASVC_impl> csts = new CORBASVC_impl();
-    PortableServer::ObjectId_var myechoid = poa->activate_object(csts);
+    PortableServer::ObjectId_var myechoid = poa->activate_object(csts.in());
     CORBA::Object_var csobj = csts->_this();
     CORBA::String_var sior(orb->object_to_string(csobj));
     std::cout << sior << std::endl;

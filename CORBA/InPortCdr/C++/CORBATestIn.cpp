@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     
     PortableServer::Servant_var<InPortCdrSVC> icts = new InPortCdrSVC();
     
-    PortableServer::ObjectId_var ucid = poa->activate_object(icts);
+    PortableServer::ObjectId_var ucid = poa->activate_object(icts.in());
     CORBA::Object_var icobj = icts->_this();
     
     CORBA::String_var sior(orb->object_to_string(icobj));

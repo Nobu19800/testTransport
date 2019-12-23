@@ -91,11 +91,18 @@ int main(int argc, char *argv[])
         if (length > 0)
         {
 #ifdef ORB_IS_ORBEXPRESS
-             memcpy(byte_data.get_buffer(), cdr.get_buffer(), length);
+        cdr.read_array_1(byte_data.get_buffer(), length);
 #elif defined(ORB_IS_TAO)
-             memcpy(byte_data.get_buffer(), cdr.begin(), length);
+        (void)length;
+        CORBA::Octet *buf = (CORBA::Octet *)byte_data.get_buffer();
+        for (const ACE_Message_Block *i = cdr.begin(); i != nullptr; i = i->cont())
+        {
+            const size_t len = i->length();
+            ACE_OS::memcpy(buf, i->rd_ptr(), len);
+            buf += len;
+        }
 #else
-             memcpy(byte_data.get_buffer(), cdr.bufPtr(), length);
+        memcpy(byte_data.get_buffer(), cdr.bufPtr(), length);
 #endif
 
         }
