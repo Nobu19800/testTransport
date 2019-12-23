@@ -1,15 +1,122 @@
 OpenRTM-aist、ROS、ROS2、Fast-RTPS、omniORB、TAOのデータ転送速度計測用のC++ソースファイル、Pythonスクリプト。
 
+<!-- TOC -->
 
-<!-- TOC -->autoauto- [計測用プログラムの概要](#計測用プログラムの概要)auto    - [OpenRTM](#openrtm)auto    - [ROS](#ros)auto    - [ROS2](#ros2)auto    - [FastRTPS](#fastrtps)auto    - [CORBA](#corba)auto- [ビルド、実行](#ビルド実行)auto    - [OpenRTM-aist(C++)](#openrtm-aistc)auto        - [omniORB](#omniorb)auto            - [ビルド手順](#ビルド手順)auto                - [Windows](#windows)auto                - [Ubuntu](#ubuntu)auto            - [実行手順](#実行手順)auto                - [Windows](#windows-1)auto                    - [CORBA通信](#corba通信)auto                    - [ROS通信](#ros通信)auto                - [Ubuntu](#ubuntu-1)auto                    - [CORBA通信](#corba通信-1)auto                    - [ROS通信](#ros通信-1)auto                    - [ROS2通信](#ros2通信)auto        - [TAO](#tao)auto            - [ビルド手順](#ビルド手順-1)auto                - [Windows](#windows-2)auto                - [Ubuntu](#ubuntu-2)auto            - [実行手順](#実行手順-1)auto                - [Windows](#windows-3)auto                - [Ubuntu](#ubuntu-3)auto    - [ROS(C++)](#rosc)auto        - [ビルド手順](#ビルド手順-2)auto            - [Windows](#windows-4)auto            - [Ubuntu](#ubuntu-4)auto        - [実行手順](#実行手順-2)auto            - [Windows](#windows-5)auto            - [Ubuntu](#ubuntu-5)auto    - [ROS2(C++)](#ros2c)auto        - [ビルド手順](#ビルド手順-3)auto            - [Windows](#windows-6)auto            - [Ubuntu](#ubuntu-6)auto        - [実行手順](#実行手順-3)auto            - [Windows](#windows-7)auto            - [Ubuntu](#ubuntu-7)auto    - [Fast-RTPS(C++)](#fast-rtpsc)auto        - [ビルド手順](#ビルド手順-4)auto            - [Windows](#windows-8)auto            - [Ubuntu](#ubuntu-8)auto        - [実行手順](#実行手順-4)auto            - [Windows](#windows-9)auto            - [Ubuntu](#ubuntu-9)auto    - [CORBA(C++)](#corbac)auto        - [omniORB](#omniorb-1)auto            - [ビルド手順](#ビルド手順-5)auto                - [Windows](#windows-10)auto                - [Ubuntu](#ubuntu-10)auto            - [実行手順](#実行手順-5)auto                - [Windows](#windows-11)auto                - [Ubuntu](#ubuntu-11)auto        - [TAO](#tao-1)auto            - [ビルド手順](#ビルド手順-6)auto                - [Windows](#windows-12)auto                - [Ubuntu](#ubuntu-12)auto            - [実行手順](#実行手順-6)auto                - [Windows](#windows-13)auto                - [Ubuntu](#ubuntu-13)auto    - [OpenRTM-aist(Python)](#openrtm-aistpython)auto        - [実行手順](#実行手順-7)auto            - [Windows](#windows-14)auto            - [Ubuntu](#ubuntu-14)auto    - [ROS(Python)](#rospython)auto        - [ビルド手順](#ビルド手順-7)auto            - [Windows](#windows-15)auto            - [Ubuntu](#ubuntu-15)auto        - [実行手順](#実行手順-8)auto            - [Windows](#windows-16)auto            - [Ubuntu](#ubuntu-16)auto    - [ROS2(Python)](#ros2python)auto        - [ビルド手順](#ビルド手順-8)auto            - [Windows](#windows-17)auto            - [Ubuntu](#ubuntu-17)auto        - [実行手順](#実行手順-9)auto            - [Windows](#windows-18)auto            - [Ubuntu](#ubuntu-18)auto    - [CORBA](#corba-1)auto        - [ビルド手順](#ビルド手順-9)auto            - [Windows](#windows-19)auto            - [Ubuntu](#ubuntu-19)auto        - [実行手順](#実行手順-10)auto            - [Windows](#windows-20)auto            - [Ubuntu](#ubuntu-20)autoauto<!-- /TOC -->
+- [計測用プログラムの概要](#計測用プログラムの概要)
+    - [OpenRTM](#openrtm)
+    - [ROS](#ros)
+    - [ROS2](#ros2)
+    - [Fast-RTPS](#fast-rtps)
+    - [CORBA](#corba)
+        - [CameraImage](#cameraimage)
+        - [InPortCdr](#inportcdr)
+- [ビルド、実行](#ビルド実行)
+    - [OpenRTM-aist(C++)](#openrtm-aistc)
+        - [omniORB](#omniorb)
+            - [ビルド手順](#ビルド手順)
+                - [Windows](#windows)
+                - [Ubuntu](#ubuntu)
+            - [実行手順](#実行手順)
+                - [Windows](#windows-1)
+                    - [IIOP](#iiop)
+                    - [ROS通信](#ros通信)
+                - [Ubuntu](#ubuntu-1)
+                    - [IIOP](#iiop-1)
+                    - [ROS通信](#ros通信-1)
+                    - [ROS2通信](#ros2通信)
+        - [TAO](#tao)
+            - [ビルド手順](#ビルド手順-1)
+                - [Windows](#windows-2)
+                    - [IIOP](#iiop-2)
+                - [Ubuntu](#ubuntu-2)
+            - [実行手順](#実行手順-1)
+                - [Windows](#windows-3)
+                    - [IIOP](#iiop-3)
+                    - [DIOP](#diop)
+                - [Ubuntu](#ubuntu-3)
+                    - [IIOP](#iiop-4)
+                    - [DIOP](#diop-1)
+    - [ROS(C++)](#rosc)
+        - [ビルド手順](#ビルド手順-2)
+            - [Windows](#windows-4)
+            - [Ubuntu](#ubuntu-4)
+        - [実行手順](#実行手順-2)
+            - [Windows](#windows-5)
+            - [Ubuntu](#ubuntu-5)
+    - [ROS2(C++)](#ros2c)
+        - [ビルド手順](#ビルド手順-3)
+            - [Windows](#windows-6)
+            - [Ubuntu](#ubuntu-6)
+        - [実行手順](#実行手順-3)
+            - [Windows](#windows-7)
+            - [Ubuntu](#ubuntu-7)
+    - [Fast-RTPS(C++)](#fast-rtpsc)
+        - [ビルド手順](#ビルド手順-4)
+            - [Windows](#windows-8)
+            - [Ubuntu](#ubuntu-8)
+        - [実行手順](#実行手順-4)
+            - [Windows](#windows-9)
+            - [Ubuntu](#ubuntu-9)
+    - [CORBA(C++)](#corbac)
+        - [omniORB](#omniorb-1)
+            - [ビルド手順](#ビルド手順-5)
+                - [Windows](#windows-10)
+                - [Ubuntu](#ubuntu-10)
+            - [実行手順](#実行手順-5)
+                - [Windows](#windows-11)
+                - [Ubuntu](#ubuntu-11)
+        - [TAO](#tao-1)
+            - [ビルド手順](#ビルド手順-6)
+                - [Windows](#windows-12)
+                - [Ubuntu](#ubuntu-12)
+            - [実行手順](#実行手順-6)
+                - [Windows](#windows-13)
+                - [Ubuntu](#ubuntu-13)
+    - [OpenRTM-aist(Python)](#openrtm-aistpython)
+        - [実行手順](#実行手順-7)
+            - [Windows](#windows-14)
+            - [Ubuntu](#ubuntu-14)
+    - [ROS(Python)](#rospython)
+        - [ビルド手順](#ビルド手順-7)
+            - [Windows](#windows-15)
+            - [Ubuntu](#ubuntu-15)
+        - [実行手順](#実行手順-8)
+            - [Windows](#windows-16)
+            - [Ubuntu](#ubuntu-16)
+    - [ROS2(Python)](#ros2python)
+        - [ビルド手順](#ビルド手順-8)
+            - [Windows](#windows-17)
+            - [Ubuntu](#ubuntu-17)
+        - [実行手順](#実行手順-9)
+            - [Windows](#windows-18)
+            - [Ubuntu](#ubuntu-18)
+    - [CORBA](#corba-1)
+        - [ビルド手順](#ビルド手順-9)
+            - [Windows](#windows-19)
+            - [Ubuntu](#ubuntu-19)
+        - [実行手順](#実行手順-10)
+            - [Windows](#windows-20)
+            - [Ubuntu](#ubuntu-20)
+
+<!-- /TOC -->
+
+
 # 計測用プログラムの概要
 ## OpenRTM
 OpenRTM-aistのデータポートの通信によるデータ転送の時間を計測。
-設定ファイルによりシリアライザ、通信インターフェースを変更することで、IIOP、ROSTCP、DDSの通信に変更可能。
+設定ファイルによりシリアライザ、通信インターフェースを変更することで、IIOP、DIOP、ROSTCP、DDSの通信に変更可能。
 ## ROS
+ROSノード同士の通信。
 ## ROS2
-## FastRTPS
+ROS2ノード同士の通信。
+## Fast-RTPS
+Fast-RTPSのPublisher、Subscriberの通信。QoSをxmlファイルで変更可能。
 ## CORBA
+omniORB、もしくはTAOのクライアント、サーバーの通信。
+### CameraImage
+RTC::CameraImage型用の通信インターフェースによる通信。
+### InPortCdr
+OpenRTM-aistの`OpenRTM::InPortCdr`インターフェースによる通信。
 
 
 # ビルド、実行
