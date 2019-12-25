@@ -28,7 +28,20 @@ if(${OPENRTM_VERSION_MAJOR} LESS 2)
         OPENRTM_LIBRARIES "${OPENRTM_LIBRARIES}")
     string(REGEX REPLACE " ;" ";"
         OPENRTM_LIBRARIES "${OPENRTM_LIBRARIES}")
-    endif (DEFINED OPENRTM_LIBRARIES)
+  endif (DEFINED OPENRTM_LIBRARIES)
+    
+  if(NOT WIN32)
+    execute_process(COMMAND rtm-config --prefix OUTPUT_VARIABLE OPENRTM_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND rtm-config --idlflags OUTPUT_VARIABLE OPENRTM_IDLFLAGS
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    separate_arguments(OPENRTM_IDLFLAGS)
+    execute_process(COMMAND rtm-config --idlc OUTPUT_VARIABLE OPENRTM_IDLC
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    set(_rtm_skelwrapper_command "rtm-skelwrapper")
+  else(NOT WIN32)
+    set(_rtm_skelwrapper_command "rtm-skelwrapper.py")
+  endif(NOT WIN32)
 endif()
 
 include_directories(${OPENRTM_INCLUDE_DIRS})
