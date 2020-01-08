@@ -721,10 +721,6 @@ cd C:\ros2_ws
 colcon build
 ```
 
-```
-
-```
-
 
 #### Ubuntu
 
