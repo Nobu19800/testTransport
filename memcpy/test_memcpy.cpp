@@ -37,8 +37,8 @@ int main()
 
         data.push_back(diff);
 
-        delete data1;
-        delete data2;
+        delete[] data1;
+        delete[] data2;
 
         static double logmul[] = { 2.0, 2.5, 2.0 };
         ++count;
