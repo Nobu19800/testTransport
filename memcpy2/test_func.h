@@ -1,0 +1,1 @@
+double testfunc(unsigned char* data1, unsigned char* data2, int datasize);
