@@ -122,7 +122,14 @@ RTC::ReturnCode_t CameraTestOut::onExecute(RTC::UniqueId ec_id)
   static double logmul[] = {2.0, 2.5, 2.0};
 
   
-  m_out.height = 100;
+  if(datasize < 300)
+  {
+      m_out.height = 1;
+  }
+  else
+  {
+      m_out.height = 100;
+  }
   m_out.width = datasize/m_out.height/3;
   m_out.format = CORBA::string_dup("rgb8");
   m_out.pixels.length(m_out.height*m_out.width*3);

@@ -27,7 +27,10 @@ def talker():
             print("finish")
             return
 
-        msg.height = 100
+        if datasize < 300:
+            msg.height = 1
+        else:
+            msg.height = 100
         msg.width = int(datasize/msg.height/3)
         msg.encoding = "rgb8"
         msg.step = 1920

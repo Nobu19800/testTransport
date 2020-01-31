@@ -68,18 +68,18 @@ testOpenRTM::PortStatus InPortCdrSVC::put(const ::testOpenRTM::CdrData& data)
 
     
 
-    if (m_data.empty() || m_datasize == m_image_data.pixels.length())
-    {
-        
-        auto start = std::chrono::seconds(m_image_data.tm.sec) + std::chrono::nanoseconds(m_image_data.tm.nsec);
-        auto end = std::chrono::system_clock::now().time_since_epoch();
-        double diff = std::chrono::duration<double>(end - start).count();
-        m_data.push_back(diff);
-    }
-    else
+    
+    if (!m_data.empty() && m_datasize != m_image_data.pixels.length())
     {
         save(m_image_data.pixels.length());
     }
+
+    auto start = std::chrono::seconds(m_image_data.tm.sec) + std::chrono::nanoseconds(m_image_data.tm.nsec);
+    auto end = std::chrono::system_clock::now().time_since_epoch();
+    double diff = std::chrono::duration<double>(end - start).count();
+    m_data.push_back(diff);
+    m_datasize = m_image_data.pixels.length();
+
     return testOpenRTM::PortStatus::PORT_OK;
 }
 

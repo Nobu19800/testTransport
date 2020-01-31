@@ -185,7 +185,10 @@ class CameraTestOutPy(OpenRTM_aist.DataFlowComponentBase):
             return RTC.RTC_ERROR
         logmul = [2.0, 2.5, 2.0]
 
-        self._d_out.height = 100
+        if self._datasize < 300:
+            self._d_out.height = 1
+        else:
+            self._d_out.height = 100
         self._d_out.width = int(self._datasize/self._d_out.height/3)
         self._d_out.format = "rgb8"
         self._d_out.pixels = b" "*int(self._d_out.height*self._d_out.width*3)

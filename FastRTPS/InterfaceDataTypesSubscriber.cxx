@@ -130,18 +130,17 @@ void InterfaceDataTypesSubscriber::SubListener::onNewDataMessage(Subscriber* sub
             
 			if(m_info.sampleKind == ALIVE)
 			{
-                if (m_data.empty() || m_datasize == st.pixels().size())
-                {
-                    auto end = std::chrono::system_clock::now().time_since_epoch();
-                    auto start = std::chrono::seconds(st.tm().sec()) + std::chrono::nanoseconds(st.tm().nsec());
-                    double diff = std::chrono::duration<double>(end - start).count();
-                    //m_file << msg->data.size() << "\t" << diff << std::endl;
-                    m_data.push_back(diff);
-                }
-                else
+                
+                if (!m_data.empty() && m_datasize != st.pixels().size())
                 {
                     save(static_cast<unsigned long>(st.pixels().size()));
                 }
+
+                auto end = std::chrono::system_clock::now().time_since_epoch();
+                auto start = std::chrono::seconds(st.tm().sec()) + std::chrono::nanoseconds(st.tm().nsec());
+                double diff = std::chrono::duration<double>(end - start).count();
+                m_data.push_back(diff);
+                m_datasize = st.pixels().size();
 			}
 		}
 }

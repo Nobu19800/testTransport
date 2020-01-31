@@ -141,23 +141,31 @@ void InterfaceDataTypesPublisher::run()
 	
 	do
 	{
-        st.height(100);
-        st.width(datasize / st.height() / 3);
-        st.pixels().resize(st.height()*st.width() * 3);
-        auto now = std::chrono::system_clock::now().time_since_epoch();
-        auto sec = std::chrono::duration_cast<std::chrono::seconds>(now);
-        auto nsec = std::chrono::duration_cast<std::chrono::nanoseconds>(now - sec);
-        st.tm().sec(static_cast<unsigned int>(sec.count()));
-        st.tm().nsec(static_cast<unsigned int>(nsec.count()));
-        mp_publisher->write(&st);
-        std::this_thread::sleep_for(sleep_nsec);
-        ++count;
+            if(datasize < 300)
+            {
+                st.height(1);
+            }
+            else
+            {
+                st.height(100);
+            }
+        
+            st.width(datasize / st.height() / 3);
+            st.pixels().resize(st.height()*st.width() * 3);
+            auto now = std::chrono::system_clock::now().time_since_epoch();
+            auto sec = std::chrono::duration_cast<std::chrono::seconds>(now);
+            auto nsec = std::chrono::duration_cast<std::chrono::nanoseconds>(now - sec);
+            st.tm().sec(static_cast<unsigned int>(sec.count()));
+            st.tm().nsec(static_cast<unsigned int>(nsec.count()));
+            mp_publisher->write(&st);
+            std::this_thread::sleep_for(sleep_nsec);
+            ++count;
 
-        if (count%datacount == 0)
-        {
-            std::cout << st.height()*st.width() * 3 << std::endl;
-            datasize = static_cast<int>(static_cast<double>(datasize)*logmul[(count / datacount) % 3]);
-        }
+            if (count%datacount == 0)
+            {
+                std::cout << st.height()*st.width() * 3 << std::endl;
+                datasize = static_cast<int>(static_cast<double>(datasize)*logmul[(count / datacount) % 3]);
+            }
 
 	}while(datasize < maxsize);
 

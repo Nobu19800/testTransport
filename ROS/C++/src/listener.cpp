@@ -35,18 +35,17 @@ void save(unsigned long newsize)
 void chatterCallback(const sensor_msgs::Image::ConstPtr& msg)
 {
     std::lock_guard<std::mutex> guard(m_mu);
-    if(m_data.empty() || m_datasize == msg->data.size())
-    {
-      auto end = std::chrono::system_clock::now().time_since_epoch();
-      auto start = std::chrono::seconds(msg->header.stamp.sec) + std::chrono::nanoseconds(msg->header.stamp.nsec);
-      double diff = std::chrono::duration<double>(end - start).count();
-      //m_file << msg->data.size() << "\t" << diff << std::endl;
-      m_data.push_back(diff);
-    }
-    else
+    
+    if(!m_data.empty() && m_datasize != msg->data.size())
     {
       save(msg->data.size());
     }
+
+    auto end = std::chrono::system_clock::now().time_since_epoch();
+    auto start = std::chrono::seconds(msg->header.stamp.sec) + std::chrono::nanoseconds(msg->header.stamp.nsec);
+    double diff = std::chrono::duration<double>(end - start).count();
+    m_data.push_back(diff);
+    m_datasize = msg->data.size();
 }
 
 

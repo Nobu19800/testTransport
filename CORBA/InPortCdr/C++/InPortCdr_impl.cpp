@@ -48,17 +48,18 @@ OpenRTM::PortStatus InPortCdrSVC::put(const ::OpenRTM::CdrData& data)
 
 
 
-    if (m_data.empty() || m_datasize == image_data.pixels.length())
-    {
-        auto end = std::chrono::system_clock::now().time_since_epoch();
-        auto start = std::chrono::seconds(image_data.tm.sec) + std::chrono::nanoseconds(image_data.tm.nsec);
-        double diff = std::chrono::duration<double>(end - start).count();
-        m_data.push_back(diff);
-    }
-    else
+    
+    if (!m_data.empty() && m_datasize != image_data.pixels.length())
     {
         save(image_data.pixels.length());
     }
+
+    auto end = std::chrono::system_clock::now().time_since_epoch();
+    auto start = std::chrono::seconds(image_data.tm.sec) + std::chrono::nanoseconds(image_data.tm.nsec);
+    double diff = std::chrono::duration<double>(end - start).count();
+    m_data.push_back(diff);
+    m_datasize = image_data.pixels.length();
+
     return OpenRTM::PortStatus::PORT_OK;
 }
 

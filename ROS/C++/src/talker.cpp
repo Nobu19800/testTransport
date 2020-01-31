@@ -32,7 +32,14 @@ int main(int argc, char **argv)
 
     //ROS_INFO("%s", msg.data.c_str());
 
-    msg.height = 100;
+    if(datasize < 300)
+    {
+        msg.height = 1;
+    }
+    else
+    {
+        msg.height = 100;
+    }
     msg.width = datasize/msg.height/3;
     msg.data.resize(msg.height*msg.width*3);
     auto now = std::chrono::system_clock::now().time_since_epoch();

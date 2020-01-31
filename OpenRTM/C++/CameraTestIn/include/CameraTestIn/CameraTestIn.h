@@ -54,17 +54,17 @@ public:
                                 RTC::CameraImage& data) override
   {
     std::lock_guard<std::mutex> guard(m_mu);
-    if(m_data.empty() || m_datasize == data.pixels.length())
-    {
-      auto end = std::chrono::system_clock::now().time_since_epoch();
-      auto start = std::chrono::seconds(data.tm.sec) + std::chrono::nanoseconds(data.tm.nsec);
-      double diff = std::chrono::duration<double>(end - start).count();
-      m_data.push_back(diff);
-    }
-    else
+    
+    if(!m_data.empty() && m_datasize != data.pixels.length())
     {
       save(data.pixels.length());
     }
+
+    auto end = std::chrono::system_clock::now().time_since_epoch();
+    auto start = std::chrono::seconds(data.tm.sec) + std::chrono::nanoseconds(data.tm.nsec);
+    double diff = std::chrono::duration<double>(end - start).count();
+    m_data.push_back(diff);
+    m_datasize = data.pixels.length();
 
     return NO_CHANGE;
   }

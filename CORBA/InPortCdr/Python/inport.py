@@ -26,14 +26,15 @@ class testOpenRTM_impl(OpenRTM__POA.InPortCdr):
         data = cdrUnmarshal(
             any.to_any(RTC.CameraImage).typecode(), cdr, True)
         try:
-            if not data or self._datasize == len(data.pixels):
-                start = OpenRTM_aist.TimeValue(
-                    data.tm.sec, data.tm.nsec / 1000)
-                end = OpenRTM_aist.Time().getTime()
-                diff = (end - start).toDouble()
-                self._data.append(diff)
-            else:
+            if data and self._datasize != len(data.pixels):
                 self.save(len(data.pixels))
+
+            start = OpenRTM_aist.TimeValue(
+                data.tm.sec, data.tm.nsec / 1000)
+            end = OpenRTM_aist.Time().getTime()
+            diff = (end - start).toDouble()
+            self._data.append(diff)
+            self._datasize = len(data.pixels)
         except:
             import traceback
             print(traceback.format_exc())
@@ -49,7 +50,8 @@ class testOpenRTM_impl(OpenRTM__POA.InPortCdr):
             avg += data
         avg /= len(self._data)
         print(self._datasize, avg, len(self._data))
-        self._file.write(str(self._datasize)+"\t"+str(avg)+"\t"+str(len(self._data))+"\n")
+        self._file.write(str(self._datasize)+"\t"+str(avg) +
+                         "\t"+str(len(self._data))+"\n")
         self._data = []
         self._datasize = newsize
 

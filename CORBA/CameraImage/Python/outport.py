@@ -37,7 +37,10 @@ if __name__ == '__main__':
             Flag = False
             continue
 
-        data.height = 100
+        if datasize < 300:
+            data.height = 1
+        else:
+            data.height = 100
         data.width = int(datasize/data.height/3)
         data.pixels = b" " * int(data.height * data.width * 3)
         data.format = "rgb8"

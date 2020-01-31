@@ -46,7 +46,14 @@ int main(int argc, char *argv[])
             Flag = false;
             return 0;
         }
-        data.height = 100;
+        if(datasize < 300)
+        {
+            data.height = 1;
+        }
+        else
+        {
+            data.height = 100;
+        }
         data.width = datasize / data.height / 3;
         data.format = CORBA::string_dup("rgb8");
         data.pixels.length(data.height*data.width * 3);

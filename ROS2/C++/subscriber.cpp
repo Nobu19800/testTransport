@@ -58,18 +58,18 @@ public:
 private:
   void topic_callback(const sensor_msgs::msg::Image::SharedPtr msg) const
   {
-std::lock_guard<std::mutex> guard(m_mu);
-    if(m_data.empty() || m_datasize == msg->data.size())
-    {
-      auto end = std::chrono::system_clock::now().time_since_epoch();
-      auto start = std::chrono::seconds(msg->header.stamp.sec) + std::chrono::nanoseconds(msg->header.stamp.nanosec);
-      double diff = std::chrono::duration<double>(end - start).count();
-      m_data.push_back(diff);
-    }
-    else
+    std::lock_guard<std::mutex> guard(m_mu);
+    
+    if(!m_data.empty() && m_datasize != msg->data.size())
     {
       save(msg->data.size());
     }
+
+    auto end = std::chrono::system_clock::now().time_since_epoch();
+    auto start = std::chrono::seconds(msg->header.stamp.sec) + std::chrono::nanoseconds(msg->header.stamp.nanosec);
+    double diff = std::chrono::duration<double>(end - start).count();
+    m_data.push_back(diff);
+    m_datasize = msg->data.size();
   }
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscription_;
 };

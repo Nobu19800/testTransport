@@ -45,7 +45,15 @@ private:
     {
       auto msg = sensor_msgs::msg::Image();
 
-      msg.height = 100;
+      
+      if(datasize < 300)
+      {
+          msg.height = 1;
+      }
+      else
+      {
+          msg.height = 100;
+      }
       msg.width = datasize/msg.height/3;
       msg.data.resize(msg.height*msg.width*3);
       auto now = std::chrono::system_clock::now().time_since_epoch();
