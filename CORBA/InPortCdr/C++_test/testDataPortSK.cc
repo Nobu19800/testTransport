@@ -14,60 +14,7 @@ OMNI_USING_NAMESPACE(omni)
 
 static const char* _0RL_library_version = omniORB_4_2;
 
-class cdrValueChunkStream_z : public cdrValueChunkStream {
-public:
-  cdrValueChunkStream_z(cdrStream& stream) : cdrValueChunkStream(stream)
-  {
 
-  }
-  ~cdrValueChunkStream_z() override
-  {
-
-  }
-
-  inline omni::ptr_arith_t inEnd2() { //return (omni::ptr_arith_t)pd_inb_end;
-                                      return omni::align_to((omni::ptr_arith_t)pd_inb_end, omni::ALIGN_1); }
-  inline omni::ptr_arith_t inMkr2() { //return (omni::ptr_arith_t)pd_inb_mkr;
-                                      return omni::align_to((omni::ptr_arith_t)pd_inb_mkr, omni::ALIGN_1); }
-  inline omni::ptr_arith_t outEnd2() { return (omni::ptr_arith_t)pd_outb_end; }
-  inline omni::ptr_arith_t outMkr2() { return (omni::ptr_arith_t)pd_outb_mkr; }
-  inline void* getBuf() { return pd_inb_mkr;}
-
-  inline _CORBA_Long getLength2()
-  {
-    omni::ptr_arith_t p1, p2;
-    copyStateToActual();
-    while (1) {
-      p1 = omni::align_to((omni::ptr_arith_t)pd_outb_mkr,
-        omni::ALIGN_4);
-      p2 = p1 + sizeof(_CORBA_Long);
-      if ((void*)p2 > pd_outb_end) {
-        if (reserveOutputSpaceForPrimitiveType(omni::ALIGN_4,
-                    sizeof(_CORBA_Long))) {
-    continue;
-        }
-        else {
-    // Cannot reserve space, most likely because this is a
-    // counting stream. We cannot continue.
-    OMNIORB_THROW(MARSHAL, MARSHAL_CannotReserveOutputSpace,
-            (CORBA::CompletionStatus)completion());
-        }
-      }
-      break;
-    }
-    _CORBA_Long* pd_lengthPtr = (CORBA::Long*)p1;
-    copyStateFromActual();
-    //*pd_lengthPtr = 0;
-    std::cout << p1 << "\t" << p2 << "\t" << (omni::ptr_arith_t)pd_outb_end << "\t" << (omni::ptr_arith_t)pd_outb_mkr << std::endl;
-    //copyStateFromActual();
-    return *pd_lengthPtr;
-  }
-  
-  /*inline _CORBA_ULong bufSize() const
-  {
-    return pd_unmarshal_byte_swap ? byteSwap(*pd_lengthPtr) : *pd_lengthPtr;
-  }*/
-};
 
 
 
@@ -230,6 +177,8 @@ void _0RL_cd_acfd8f3c9dc70dc8_00000000::unmarshalArguments(cdrStream& _n)
   cdr.put_octet_array((CORBA::Octet*)_n.inPtr(),4);
   CORBA::ULong bufsize;
   bufsize <<= cdr;
+
+  _n.copy_to(argc_0_, bufsize);
 }
 
 void _0RL_cd_acfd8f3c9dc70dc8_00000000::marshalReturnedValues(cdrStream& _n)
