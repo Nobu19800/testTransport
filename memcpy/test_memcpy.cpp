@@ -9,7 +9,7 @@ int main()
     std::ofstream file("cameratestin.txt");
     std::vector<double> data;
 
-    static const int maxsize = 1200001;
+    static const int maxsize = 67108864;
     const int datacount = 50;
 
     int datasize = 100;

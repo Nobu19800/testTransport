@@ -57,7 +57,7 @@ RTC::ReturnCode_t CameraTestIn::onInitialize()
   // Set InPort buffers
   addInPort("in", m_inIn);
   m_datalistener = new DataListener(m_file);
-  m_inIn.addConnectorDataListener(ON_BUFFER_WRITE,
+  m_inIn.addConnectorDataListener(ConnectorDataListenerType::ON_BUFFER_WRITE,
                                     m_datalistener);
   
   // Set OutPort buffer
