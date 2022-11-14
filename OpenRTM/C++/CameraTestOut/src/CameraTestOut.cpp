@@ -111,8 +111,8 @@ RTC::ReturnCode_t CameraTestOut::onDeactivated(RTC::UniqueId ec_id)
 
 RTC::ReturnCode_t CameraTestOut::onExecute(RTC::UniqueId ec_id)
 {
-  static const int maxsize = 1200001;
-  const int datacount = 500;
+  static const int maxsize = 100000001;
+  const int datacount = 500;//500;
   if(datasize > maxsize)
   {
     std::cout << "finish" << std::endl;
@@ -126,9 +126,13 @@ RTC::ReturnCode_t CameraTestOut::onExecute(RTC::UniqueId ec_id)
   {
       m_out.height = 1;
   }
-  else
+  else if(datasize < 30000)
   {
       m_out.height = 100;
+  }
+  else
+  {
+    m_out.height = 16000;
   }
   m_out.width = datasize/m_out.height/3;
   m_out.format = CORBA::string_dup("rgb8");

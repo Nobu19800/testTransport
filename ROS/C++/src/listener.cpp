@@ -7,6 +7,7 @@
 
 
 std::vector<double> m_data;
+std::vector<std::chrono::nanoseconds> m_times;
 unsigned long m_datasize;
 std::mutex m_mu;
 std::ofstream m_file("listener.txt");
@@ -26,10 +27,26 @@ void save(unsigned long newsize)
 
     avg /= m_data.size();
 
-    std::cout << newsize << "\t" << avg << "\t" << m_data.size() << std::endl;
-    m_file << m_datasize << "\t" << avg << "\t" << m_data.size() << std::endl;
+    double throuput = 0;
+    int count = 0;
+    std::chrono::nanoseconds start;
+    for(const auto &data:m_times)
+    {
+      if(count > 0)
+      {
+        double diff = std::chrono::duration<double>(data - start).count();
+        throuput += static_cast<double>(m_datasize * 8) / diff;
+      }
+      count++;
+      start = data;
+    }
+    throuput /= (m_times.size()-1);
+
+    std::cout << newsize << "\t" << avg << "\t" << throuput << "\t" << m_data.size() << std::endl;
+    m_file << m_datasize << "\t" << avg << "\t" << throuput << "\t" << m_data.size() << std::endl;
 
     m_data.clear();
+    m_times.clear();
     m_datasize = newsize;
 }
 void chatterCallback(const sensor_msgs::Image::ConstPtr& msg)
@@ -45,6 +62,7 @@ void chatterCallback(const sensor_msgs::Image::ConstPtr& msg)
     auto start = std::chrono::seconds(msg->header.stamp.sec) + std::chrono::nanoseconds(msg->header.stamp.nsec);
     double diff = std::chrono::duration<double>(end - start).count();
     m_data.push_back(diff);
+    m_times.push_back(end);
     m_datasize = msg->data.size();
 }
 

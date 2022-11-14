@@ -8,7 +8,7 @@ using namespace std::chrono_literals;
 
 static double logmul[] = {2.0, 2.5, 2.0};
 const int datacount = 500;
-const int maxsize = 1200001;
+const int maxsize = 100000001;
 
 class Publisher : public rclcpp::Node
 {
@@ -19,7 +19,7 @@ public:
       //RMW_QOS_POLICY_RELIABILITY_RELIABLE : RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
   rmw_qos_reliability_policy_t reliability_policy_ = RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT;
   //RMW_QOS_POLICY_HISTORY_KEEP_ALL : RMW_QOS_POLICY_HISTORY_KEEP_LAST
-  rmw_qos_history_policy_t history_policy_ = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
+  rmw_qos_history_policy_t history_policy_ = RMW_QOS_POLICY_HISTORY_KEEP_LAST;
   size_t depth_ = 10;
   auto qos = rclcpp::QoS(
     rclcpp::QoSInitialization(
@@ -28,9 +28,9 @@ public:
   ));
   qos.reliability(reliability_policy_);
 
-    publisher_ = this->create_publisher<sensor_msgs::msg::Image>("topic", qos);
+    publisher_ = this->create_publisher<sensor_msgs::msg::Image>("chatter", qos);
     timer_ = this->create_wall_timer(
-      2ms, std::bind(&Publisher::timer_callback, this));
+      1ms, std::bind(&Publisher::timer_callback, this));
 
     datasize = 100;
     count = 0;
@@ -48,11 +48,15 @@ private:
       
       if(datasize < 300)
       {
-          msg.height = 1;
+        msg.height = 1;
+      }
+      else if(datasize < 30000)
+      {
+        msg.height = 100;
       }
       else
       {
-          msg.height = 100;
+        msg.height= 16000;
       }
       msg.width = datasize/msg.height/3;
       msg.data.resize(msg.height*msg.width*3);

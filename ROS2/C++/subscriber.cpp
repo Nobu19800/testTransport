@@ -7,6 +7,7 @@
 using std::placeholders::_1;
 
 std::vector<double> m_data;
+std::vector<std::chrono::nanoseconds> m_times;
 unsigned long m_datasize;
 std::mutex m_mu;
 std::ofstream m_file("listener.txt");
@@ -25,10 +26,28 @@ void save(unsigned long newsize)
     }
 
     avg /= m_data.size();
-    m_data.clear();
 
-    std::cout << newsize << "\t" << avg << "\t" << m_data.size() << std::endl;
-    m_file << m_datasize << "\t" << avg << "\t" << m_data.size() << std::endl;
+    double throuput = 0;
+    int count = 0;
+    std::chrono::nanoseconds start;
+    for(const auto &data:m_times)
+    {
+      if(count > 0)
+      {
+        double diff = std::chrono::duration<double>(data - start).count();
+        throuput += static_cast<double>(m_datasize * 8) / diff;
+      }
+      count++;
+      start = data;
+    }
+    throuput /= (m_times.size()-1);
+    
+
+    std::cout << newsize << "\t" << avg << "\t" << throuput << "\t" << m_data.size() << std::endl;
+    m_file << m_datasize << "\t" << avg << "\t" << throuput << "\t" << m_data.size() << std::endl;
+
+    m_data.clear();
+    m_times.clear();
 
     m_datasize = newsize;
 }
@@ -42,7 +61,7 @@ public:
     //RMW_QOS_POLICY_RELIABILITY_RELIABLE : RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
   rmw_qos_reliability_policy_t reliability_policy_ = RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT;
   //RMW_QOS_POLICY_HISTORY_KEEP_ALL : RMW_QOS_POLICY_HISTORY_KEEP_LAST
-  rmw_qos_history_policy_t history_policy_ = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
+  rmw_qos_history_policy_t history_policy_ = RMW_QOS_POLICY_HISTORY_KEEP_LAST;
   size_t depth_ = 10;
   auto qos = rclcpp::QoS(
     rclcpp::QoSInitialization(
@@ -52,7 +71,7 @@ public:
   qos.reliability(reliability_policy_);
 
     subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
-      "topic", qos, std::bind(&Subscriber::topic_callback, this, _1));
+      "chatter", qos, std::bind(&Subscriber::topic_callback, this, _1));
   }
 
 private:
@@ -69,6 +88,7 @@ private:
     auto start = std::chrono::seconds(msg->header.stamp.sec) + std::chrono::nanoseconds(msg->header.stamp.nanosec);
     double diff = std::chrono::duration<double>(end - start).count();
     m_data.push_back(diff);
+    m_times.push_back(end);
     m_datasize = msg->data.size();
   }
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscription_;

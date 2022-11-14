@@ -14,11 +14,11 @@ int main(int argc, char **argv)
 
   ros::Publisher chatter_pub = n.advertise<sensor_msgs::Image>("chatter", 1000);
 
-  ros::Rate loop_rate(20);
+  ros::Rate loop_rate(1000);
 
   static double logmul[] = {2.0, 2.5, 2.0};
   int datasize = 100;
-  const int maxsize = 1200001;
+  const int maxsize = 100000001;
   int count = 0;
   const int datacount = 500;
   while (ros::ok() && datasize < maxsize)
@@ -31,14 +31,18 @@ int main(int argc, char **argv)
     //msg.data = ss.str();
 
     //ROS_INFO("%s", msg.data.c_str());
-
+    
     if(datasize < 300)
     {
-        msg.height = 1;
+      msg.height = 1;
+    }
+    else if(datasize < 30000)
+    {
+      msg.height = 100;
     }
     else
     {
-        msg.height = 100;
+      msg.height = 16000;
     }
     msg.width = datasize/msg.height/3;
     msg.data.resize(msg.height*msg.width*3);
@@ -47,7 +51,6 @@ int main(int argc, char **argv)
     auto nsec = std::chrono::duration_cast<std::chrono::nanoseconds>(now - sec);
     msg.header.stamp.sec  = static_cast<unsigned int>(sec.count());
     msg.header.stamp.nsec = static_cast<unsigned int>(nsec.count());
-
 
     chatter_pub.publish(msg);
 
@@ -63,6 +66,7 @@ int main(int argc, char **argv)
     {
       std::cout << msg.height*msg.width*3 << std::endl;
       datasize = static_cast<int>(static_cast<double>(datasize)*logmul[(count/datacount)%3]);
+      
     }
     
   }

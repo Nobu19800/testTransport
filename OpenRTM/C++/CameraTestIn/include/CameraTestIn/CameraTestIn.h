@@ -63,7 +63,26 @@ public:
     auto end = std::chrono::system_clock::now().time_since_epoch();
     auto start = std::chrono::seconds(data.tm.sec) + std::chrono::nanoseconds(data.tm.nsec);
     double diff = std::chrono::duration<double>(end - start).count();
+
     m_data.push_back(diff);
+    m_times.push_back(end);
+
+    /*
+    auto start_ser1 = std::chrono::system_clock::now().time_since_epoch();
+    m_cdr.rewindPtrs();
+    m_cdr.setByteSwapFlag(true);
+    data >>= m_cdr;
+    auto start_ser2 = std::chrono::system_clock::now().time_since_epoch();
+    data <<= m_cdr;
+    auto end_des = std::chrono::system_clock::now().time_since_epoch();
+
+    double diff_ser = std::chrono::duration<double>(start_ser2 - start_ser1).count();
+    double diff_des = std::chrono::duration<double>(end_des - start_ser2).count();
+
+    m_serialize_time.push_back(diff_ser);
+    m_deserialize_time.push_back(diff_des);
+    */
+    
     m_datasize = data.pixels.length();
 
     return NO_CHANGE;
@@ -82,17 +101,61 @@ public:
       avg += data;
     }
     avg /= m_data.size();
+
+    double throuput = 0;
+    int count = 0;
+    std::chrono::nanoseconds start;
+    for(const auto &data:m_times)
+    {
+      if(count > 0)
+      {
+        double diff = std::chrono::duration<double>(data - start).count();
+        throuput += static_cast<double>(m_datasize * 8) / diff;
+      }
+      count++;
+      start = data;
+    }
+    throuput /= (m_times.size()-1);
+
+    /*
+    double serialize_time = 0;
+    for(const auto &data:m_serialize_time)
+    {
+      serialize_time += data;
+    }
+    serialize_time /= m_serialize_time.size();
+
+    double deserialize_time = 0;
+    for(const auto &data:m_deserialize_time)
+    {
+      deserialize_time += data;
+    }
+    deserialize_time /= m_deserialize_time.size();
+    */
+
     
-    std::cout << m_datasize << "\t" << avg << "\t" << m_data.size() << std::endl;
-    m_file << m_datasize << "\t" << avg << "\t" << m_data.size() << std::endl;
+    //std::cout << m_datasize << "\t" << avg << "\t" << throuput << "\t" << m_data.size() << "\t" << serialize_time << "\t" << deserialize_time << std::endl;
+    //m_file << m_datasize << "\t" << avg << "\t" << throuput << "\t" << m_data.size() << "\t" << serialize_time << "\t" << deserialize_time << std::endl;
+
+    std::cout << m_datasize << "\t" << avg << "\t" << throuput << "\t" << m_data.size() << std::endl;
+    m_file << m_datasize << "\t" << avg << "\t" << throuput << "\t" << m_data.size() << std::endl;
     m_data.clear();
+    m_times.clear();
+
+    //m_serialize_time.clear();
+    //m_deserialize_time.clear();
+
     m_datasize = newsize;
   }
 private:
   std::ofstream& m_file;
   std::vector<double> m_data;
+  std::vector<std::chrono::nanoseconds> m_times;
   CORBA::ULong m_datasize;
   std::mutex m_mu;
+  cdrMemoryStream m_cdr;
+  //std::vector<double> m_serialize_time;
+  //std::vector<double> m_deserialize_time;
 };
 
 /*!
